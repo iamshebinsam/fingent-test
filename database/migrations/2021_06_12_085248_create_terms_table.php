@@ -15,7 +15,6 @@ class CreateTermsTable extends Migration
         });
     }
 
-    
     public function down(): void
     {
         Schema::dropIfExists('terms');

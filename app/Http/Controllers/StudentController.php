@@ -2,90 +2,85 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
+use App\Models\Student;
 use App\Repository\Interfaces\StudentRepositoryInterface;
-use Illuminate\Http\Request;
+use App\Repository\Interfaces\TeacherRepositoryInterface;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class StudentController extends Controller
 {
     private StudentRepositoryInterface $studentRepository;
 
-    public function __construct(StudentRepositoryInterface $studentRepository)
-    {
+    private TeacherRepositoryInterface $teacherRepository;
+
+    public function __construct(
+        StudentRepositoryInterface $studentRepository,
+        TeacherRepositoryInterface $teacherRepository
+    ) {
         $this->studentRepository = $studentRepository;
+        $this->teacherRepository = $teacherRepository;
     }
-    
-    public function index()
+
+    public function index(): View
     {
-        $students = $this->studentRepository->all();
+        $students = $this->studentRepository->paginate(10);
 
         return view('student.index', [
             'students' => $students,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        $teachers = $this->teacherRepository->all();
+
+        return view('student.create', [
+            'teachers' => $teachers,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(CreateStudentRequest $createStudentRequest): Response
     {
-        //
+        $this->studentRepository->create($createStudentRequest->validated());
+        Session::flash('message', 'Student Record Created successfully');
+
+        return redirect('student');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit(Student $student): View
     {
-        //
+        $teachers = $this->teacherRepository->all();
+
+        return view('student.edit', [
+            'student' => $student,
+            'teachers' => $teachers,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+    public function update(
+        UpdateStudentRequest $updateStudentRequest,
+        Student $student
+    ): Response {
+        $this->studentRepository->update($student, $updateStudentRequest->validated());
+        Session::flash('message', 'Student Record Updated successfully');
+
+        return redirect('student');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function destroy(Student $student): Response
     {
-        //
-    }
+        try {
+            $this->studentRepository->delete($student);
+            Session::flash('message', 'Student Record Deleted successfully');
+        } catch (Throwable $exception) {
+            Session::flash('message', 'Error!! '.$exception->getMessage());
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return redirect('student');
     }
 }

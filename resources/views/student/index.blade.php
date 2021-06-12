@@ -29,15 +29,18 @@
                 <td>{{ $student->gender }}</td>
                 <td>{{ $student->teacher->name }}</td>
                 <td>
-                    <a class="btn btn-primary" href="{{ route('student.edit', $student->id) }}">Edit</a>
-                    <a class="btn btn-danger" href="{{ route('student.destroy', $student->id) }}">Delete</a>
+                    <form method="POST" action="{{ route('student.destroy', $student->id) }}">
+                        @csrf
+                        {{ method_field('DELETE') }}
+                        <a class="p-2 btn btn-primary" href="{{ route('student.edit', $student->id) }}">Edit</a>
+                        <button type="submit" class="p-2 btn btn-danger" href="{{ route('student.destroy', $student->id) }}">Delete</a>
+                    </form>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-  
+    {{ $students->links() }}
 </div>
-
 
 @endsection

@@ -17,7 +17,7 @@ class CreateMarksTable extends Migration
             $table->foreignId('term_id');
             $table->foreign('student_id')->references('id')->on('students');
             $table->foreign('term_id')->references('id')->on('terms');
-            $table->unique(['student_id','term_id']);
+            $table->unique(['student_id', 'term_id']);
             $table->timestamps();
         });
     }

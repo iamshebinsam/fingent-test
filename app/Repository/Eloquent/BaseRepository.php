@@ -3,20 +3,19 @@
 namespace App\Repository\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Repository\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Repository\Interfaces\BaseRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class BaseRepository implements BaseRepositoryInterface
 {
     protected Model $model;
 
-   
     public function __construct(Model $model)
     {
         $this->model = $model;
     }
- 
+
     public function create(array $attributes): Model
     {
         return $this->model->create($attributes);
@@ -24,7 +23,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function update(Model $model, array $attributes): bool
     {
-        foreach ($attributes as $attribute=>$value) {
+        foreach ($attributes as $attribute => $value) {
             $model->{$attribute} = $value;
         }
 
@@ -45,7 +44,6 @@ class BaseRepository implements BaseRepositoryInterface
     {
         return $this
             ->model
-            ->paginate($count)
-        ;
+            ->paginate($count);
     }
 }

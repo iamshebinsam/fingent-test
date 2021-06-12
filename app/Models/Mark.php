@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use DateTime;
+use DateTimeZone;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Mark extends Model
 {
@@ -15,7 +17,7 @@ class Mark extends Model
         'term_id',
         'maths',
         'science',
-        'history'
+        'history',
     ];
 
     public function student(): BelongsTo
@@ -30,6 +32,13 @@ class Mark extends Model
 
     public function getTotal(): int
     {
-        return ($this->science)+($this->history)+($this->maths);
+        return ($this->science) + ($this->history) + ($this->maths);
+    }
+
+    public function getCreatedAtAttribute(string $value): string
+    {
+        $date = new DateTime($value, new DateTimeZone('UTC'));
+
+        return $date->format('M d, Y H:i A');
     }
 }
