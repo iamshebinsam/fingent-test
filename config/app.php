@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Fingent Test'),
 
     /*
     |--------------------------------------------------------------------------
@@ -229,5 +229,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+
+    'pagination_limit' => 15,
 
 ];
